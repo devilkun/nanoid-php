@@ -11,6 +11,7 @@ class Client
      */
     const MODE_NORMAL = 1;
     const MODE_DYNAMIC = 2;
+
     /**
      * @param string $alphabet Symbols to be used in ID.
      * @param integer $size number of symbols in ID.
@@ -22,6 +23,7 @@ class Client
      * @var CoreInterface $core Core dynamic random
      */
     private $core;
+
     /**
      * @var GeneratorInterface $generator Random Btyes Generator
      */
@@ -32,12 +34,12 @@ class Client
      *
      * @codeCoverageIgnore
      * @param integer $size
-     * @param GeneratorInterface $generator
+     * @param GeneratorInterface|null $generator
      */
-    public function __construct($size = 21, GeneratorInterface $generator = null)
+    public function __construct($size = 21, ?GeneratorInterface $generator = null)
     {
         $this->size = $size > 0 ? $size : 21;
-        $this->generator = $generator?:new Generator();
+        $this->generator = $generator ?: new Generator();
         $this->core = new Core();
         $this->alphabet = CoreInterface::SAFE_SYMBOLS;
     }
@@ -51,7 +53,7 @@ class Client
      */
     public function generateId($size = 0, $mode = self::MODE_NORMAL)
     {
-        $size = $size>0? $size: $this->size;
+        $size = $size > 0 ? $size : $this->size;
         switch ($mode) {
             case self::MODE_DYNAMIC:
                 return $this->core->random($this->generator, $size, $this->alphabet);
@@ -65,16 +67,16 @@ class Client
      * you have been implements your custom GeneratorInterface as correctly.
      * Otherwise use the build-in default random bytes generator
      *
-     * @param GeneratorInterface $generator
+     * @param GeneratorInterface|null $generator
      * @param integer $size
      * @param string $alphabet default CoreInterface::SAFE_SYMBOLS
      * @return string
      */
-    public function formattedId($alphabet, $size = 0, GeneratorInterface $generator = null)
+    public function formattedId($alphabet, $size = 0, ?GeneratorInterface $generator = null)
     {
-        $alphabet = $alphabet?:CoreInterface::SAFE_SYMBOLS;
-        $size = $size>0? $size: $this->size;
-        $generator = $generator?:$this->generator;
+        $alphabet = $alphabet ?: CoreInterface::SAFE_SYMBOLS;
+        $size = $size > 0 ? $size : $this->size;
+        $generator = $generator ?: $this->generator;
 
         return $this->core->random($generator, $size, $alphabet);
     }
@@ -84,14 +86,14 @@ class Client
      *
      * @param string $alphabet
      * @param integer $size
-     * @param GeneratorInterface $generator
+     * @param GeneratorInterface|null $generator
      *
      * @return string
      * @since 1.0.0
      */
-    public function formatedId($alphabet, $size = 0, GeneratorInterface $generator = null)
+    public function formatedId($alphabet, $size = 0, ?GeneratorInterface $generator = null)
     {
-        $size = $size>0? $size: $this->size;
+        $size = $size > 0 ? $size : $this->size;
 
         return $this->formattedId($alphabet, $size, $generator);
     }
@@ -109,8 +111,8 @@ class Client
     {
         $id = '';
         while (1 <= $size--) {
-            $rand = mt_rand()/(mt_getrandmax() + 1);
-            $id .= $this->alphabet[intval($rand*64)];
+            $rand = mt_rand() / (mt_getrandmax() + 1);
+            $id .= $this->alphabet[intval($rand * 64)];
         }
 
         return $id;
